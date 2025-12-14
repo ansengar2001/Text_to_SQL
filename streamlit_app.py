@@ -33,5 +33,8 @@ if st.button("Run Query"):
         st.subheader("🔹 Generated SQL")
         st.code(result["sql_query"], language="sql")
 
+        st.subheader("🔹 Validated SQL Query")
+        st.code(result["validated_sql"], language="sql")
+
         st.subheader("🔹 Result")
         st.text(result["final_answer"])

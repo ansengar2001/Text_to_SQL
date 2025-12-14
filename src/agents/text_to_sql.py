@@ -10,7 +10,8 @@ graph.add_node("generate", generate_sql)
 graph.add_node("generate_ans", generate_answer)
 
 graph.add_edge(START, "generate")
-graph.add_edge("generate", "execute")
+graph.add_edge("generate", "validate")
+graph.add_edge("validate", "execute")
 graph.add_edge("execute", "generate_ans")
 graph.add_edge("generate_ans", END)
 

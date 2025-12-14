@@ -1,5 +1,6 @@
 from src.LLM import llm_client
-from src.prompts.sql_prompt import sql_prompt, sqi
+from src.prompts.sql_prompt import sql_prompt
+from src.prompts.sql_validation_prompt import sql_validation_prompt
 
 def generate_sql(state):
     prompt = sql_prompt(state["question"], state["schema"])
@@ -40,12 +41,12 @@ from sqlalchemy import text
 from src.database.configure_sqllite import db
 
 def execute_sql(state):
-    sql = state["sql_query"]
+    sql = state["validated_sql"]
 
     # Remove markdown formatting if present
     sql = sql.replace("```sql", "").replace("```", "").strip()
 
-    state["sql_query"] = sql
+    
     state["sql_result"] = db.run(sql)
 
     return state
