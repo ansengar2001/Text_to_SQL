@@ -6,4 +6,4 @@ class SQLAgentState(TypedDict):
     sql_query: str         # Generated SQL
     sql_result: Any        # Output of SQL execution
     final_answer: str      # Final LLM answer
-    error: str             # error in vadilation
+    validated_sql: str             #  in vadilation

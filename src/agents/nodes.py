@@ -1,5 +1,6 @@
 from src.LLM import llm_client
 from src.prompts.sql_prompt import sql_prompt
+from src.prompts.sql_validation_prompt import sql_validation_prompt
 
 def generate_sql(state):
     prompt = sql_prompt(state["question"], state["schema"])
@@ -14,8 +15,25 @@ def generate_sql(state):
 
 
 def validate_sql(state):
-    if "select" not in state["sql_query"].lower():
-        state["error"] = "Invalid SQL"
+    prompt = sql_validation_prompt(
+        schema=state["schema"],
+        sql_query=state["sql_query"]
+    )
+
+    response = llm_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You validate and fix SQL queries."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    cleaned_sql = response.choices[0].message.content.strip()
+
+    # Safety: remove accidental markdown remnants
+    cleaned_sql = cleaned_sql.replace("```sql", "").replace("```", "").strip()
+
+    state["validated_sql"] = cleaned_sql
     return state
 
 
@@ -23,12 +41,12 @@ from sqlalchemy import text
 from src.database.configure_sqllite import db
 
 def execute_sql(state):
-    sql = state["sql_query"]
+    sql = state["validated_sql"]
 
     # Remove markdown formatting if present
     sql = sql.replace("```sql", "").replace("```", "").strip()
 
-    state["sql_query"] = sql
+    
     state["sql_result"] = db.run(sql)
 
     return state
