@@ -12,5 +12,6 @@ def run_text_to_sql(question: str):
     return {
         "question": question,
         "sql_query": result.get("sql_query", ""),
+        "validated_sql": result.get("validated_sql", ""),
         "final_answer": result.get("final_answer", "")
     }
