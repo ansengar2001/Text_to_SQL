@@ -1,0 +1,7 @@
+streamlit
+langchain
+langgraph
+langchain-community
+sqlalchemy
+openai
+tabulate
